@@ -42,8 +42,14 @@ and realloc.
 
 MANAGED STRING INFORMATION
 --------------------------
-Kanka uses mstrings, a managed (bound-checked, length-stored, and [soon enough] hash-stored) c string wrapper. When using mstrings, be sure to avoid altering them directly unless you know what you're doing. If you do, try to section the alteration off into an mstr_* function (mstr_read, mstr_move, etc cetera). If you alter a string, be sure to recompute its length (and later its hash).
+Kanka uses mstrings, a managed (bound-checked, length-stored, and [soon 
+enough] hash-stored) c string wrapper. When using mstrings, be sure to avoid 
+altering them directly unless you know what you're doing. If you do, try to 
+section the alteration off into an mstr_* function (mstr_read, mstr_move, 
+etc cetera). If you alter a string, be sure to recompute its length (and 
+later its hash).
 
-(Note to self: provide an mstr_normalize function to recompute length and any other info)
+(Note to self: provide an mstr_normalize function to recompute length and 
+any other info)
 
 
