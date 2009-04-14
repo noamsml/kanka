@@ -37,7 +37,13 @@ run correctly, you must call binit() before allocating any memory. You
 should also call blame() at the end of your program, or else you're not 
 really gaining anything from using bmalloc. If do not add -DBLAME to the gcc 
 flags, bmalloc, bfree and brealloc will defer transparently to malloc, free, 
-and realloc. There is no bcalloc, and if you want to use calloc you should 
-grow a pair, you pussy.
+and realloc.
+
+
+MANAGED STRING INFORMATION
+--------------------------
+Kanka uses mstrings, a managed (bound-checked, length-stored, and [soon enough] hash-stored) c string wrapper. When using mstrings, be sure to avoid altering them directly unless you know what you're doing. If you do, try to section the alteration off into an mstr_* function (mstr_read, mstr_move, etc cetera). If you alter a string, be sure to recompute its length (and later its hash).
+
+(Note to self: provide an mstr_normalize function to recompute length and any other info)
 
 
