@@ -1,4 +1,5 @@
 #include "mstring.h"
+#include "blame.h"
 #include <string.h>
 #include <stdlib.h>
 
@@ -6,26 +7,26 @@
 //=============================
 string mstr_new(int size)
 {
-	string s = malloc(sizeof(struct _string));
+	string s = bmalloc(sizeof(struct _string));
 	s->maxlen = size;
 	s->len = 0;
-	s->str = malloc(s->maxlen+1);
+	s->str = bmalloc(s->maxlen+1);
 	*s->str = 0;
 	return s;
 }
 
 void mstr_destroy(string s)
 {
-	free(s->str);
-	free(s);
+	bfree(s->str);
+	bfree(s);
 }
 
 string mstr_clone(string ms)
 {
-	string s = malloc(sizeof(struct _string));
+	string s = bmalloc(sizeof(struct _string));
 	s->maxlen = ms->maxlen;
 	s->len = ms->len;
-	s->str = malloc(s->maxlen+1);
+	s->str = bmalloc(s->maxlen+1);
 	strcpy(s->str, ms->str);
 	return s;
 }
@@ -34,10 +35,10 @@ string mstr_clone(string ms)
 string mstr_cclone(const char* str)
 {
 	int l = strlen(str);
-	string s = malloc(sizeof(struct _string));
+	string s = bmalloc(sizeof(struct _string));
 	s->maxlen = l;
 	s->len = l;
-	s->str = malloc(s->maxlen+1);
+	s->str = bmalloc(s->maxlen+1);
 	strcpy(s->str, str);
 	return s;
 }

@@ -1,8 +1,10 @@
 #include "mstring.h"
+#include "blame.h"
 #include <stdio.h>
 
 int main()
 {
+	binit();
 	string s;
 	s = mstr_new(50);
 	mstr_ccopy(s,"Hello world");
@@ -17,4 +19,5 @@ int main()
 	mstr_destroy(s);
 	mstr_destroy(s2);
 	mstr_destroy(s3);
+	blame();
 }

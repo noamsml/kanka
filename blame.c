@@ -73,27 +73,40 @@ void __bfree(void* ptr, const char* filename, int lineno)
 		cur = cur->next;
 	}
 	
-	printf("WARNING: bfree: %s/%d : pointer %d not found.\n", filename, lineno, ptr);
+	printf("WARNING: bfree: %s/%d : pointer %d not found.\n", filename, lineno, (int)ptr);
 }
 
 void* __brealloc(void* ptr, int size, const char* filename, int lineno)
 {
 	int index = (int)ptr % TABLESIZE;
 	node cur = blametable[index];
+	node prev = NULL;
 	while (cur)
 	{
 		if (cur->ptr == ptr)
 		{
+			//1. remove from the table so we can reinsert correctly
+			if (prev) prev->next = cur->next;
+			else blametable[index] = cur->next;
+			
+			//2. reallocate and normalize our data
 			cur->ptr = realloc(cur->ptr, size);
 			cur->size = size;
 			cur->line_re = lineno;
 			cur->file_re = filename;
+			index = (int)cur->ptr % TABLESIZE;
+			
+			//3. reinsert
+			cur->next = blametable[index];
+			blametable[index] = cur;
+			
 			return cur->ptr;
 		}
+		prev = cur;
 		cur = cur->next;
 	}
 	
-	printf("WARNING: brealloc: %s/%d : pointer %d not found.\n", filename, lineno, ptr);
+	printf("WARNING: brealloc: %s/%d : pointer %d not found.\n", filename, lineno, (int)ptr);
 }
 
 int blame()
@@ -109,11 +122,12 @@ int blame()
 		if (cur && !blamable) 
 		{
 			blamable = 1; 
-			printf("\nUNFREED MEMORY FOUND!\n%-5s %-10s %-5s\n", "SIZE", "FILENAME", "LINE");
+			printf("\nUNFREED MEMORY FOUND!\n%-5s %-12s %-20s %-5s %-20s %-5s\n", "SIZE", "ADDRESS", "FILENAME", "LINE", "RFILE", "RLINE");
 		}
 		while (cur)
 		{
-			printf("%-5d %-10s %-5d\n", cur->size, cur->file, cur->line);
+			if (cur->line_re) printf("%-5d %-12d %-20s %-5d %-20s %-5d \n", cur->size, (int)cur->ptr, cur->file, cur->line, cur->file_re, cur->line_re);
+			else printf("%-5d %-12d %-20s %-5d\n", cur->size, (int)cur->ptr, cur->file, cur->line);
 			cur = cur->next;
 		}
 	}
